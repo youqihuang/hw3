@@ -1,7 +1,12 @@
 #ifndef HEAP_H
 #define HEAP_H
 #include <functional>
+#include <algorithm>
 #include <stdexcept>
+#include <vector>
+#include <iostream>
+
+using namespace std;
 
 template <typename T, typename PComparator = std::less<T> >
 class Heap
@@ -61,14 +66,50 @@ public:
 
 private:
   /// Add whatever helper functions and data members you need below
-
-
-
+  std::vector<T> heap_;
+  int m_;
+  PComparator c_;
 
 };
 
 // Add implementation of member functions here
+template <typename T, typename PComparator>
+Heap<T,PComparator>::Heap(int m, PComparator c) : heap_(){
+  m_ = m;
+  c_ = c;
+}
 
+template <typename T, typename PComparator>
+Heap<T,PComparator>::~Heap() {
+
+}
+
+template <typename T, typename PComparator>
+bool Heap<T,PComparator>::empty() const {
+  return heap_.size() == 0;
+}
+
+template <typename T, typename PComparator>
+size_t Heap<T,PComparator>::size() const {
+  return heap_.size();
+}
+
+
+template <typename T, typename PComparator>
+void Heap<T,PComparator>::push(const T& item){
+    heap_.push_back(item);
+    std::size_t index = heap_.size() - 1;
+    while (index != 0) {
+        std::size_t parent_index = (index - 1) / m_;
+        T& current = heap_[index];
+        T& parent = heap_[parent_index];
+        if (c_(parent, current)) {
+            break;
+        }
+        std::swap(current, parent);
+        index = parent_index;
+    }
+}
 
 // We will start top() for you to handle the case of 
 // calling top on an empty heap
@@ -81,12 +122,12 @@ T const & Heap<T,PComparator>::top() const
     // ================================
     // throw the appropriate exception
     // ================================
-
+    throw std::underflow_error("underflow"); 
 
   }
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
-
+  return heap_.front();
 
 
 }
@@ -101,12 +142,29 @@ void Heap<T,PComparator>::pop()
     // ================================
     // throw the appropriate exception
     // ================================
-
-
+    throw std::underflow_error("underflow");
   }
-
-
-
+  std::swap(heap_.back(), heap_.front());
+  heap_.pop_back();
+  size_t index = 0;
+  while (index < size()) {
+    size_t swap_index = index;
+    size_t current_index = index;
+    for (int i = 0; i < m_; i++) {
+      size_t current_index = (m_*index) + (i+1);
+      // if (c_(heap_[swap_index], heap_[swap_index])) {
+      //   return;
+      // }
+      if (current_index < size() && (c_(heap_[current_index], heap_[swap_index]) || (heap_[current_index] == heap_[swap_index]))) {
+        swap_index = current_index;
+      }
+    }
+    if (swap_index == current_index) {
+      break;
+    }
+    std::swap(heap_[current_index], heap_[swap_index]);
+    index = swap_index;
+  }
 }
 
 

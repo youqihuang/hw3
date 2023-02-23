@@ -1,2 +1,14 @@
 *.o
 llrec-test
+.DS_Store
+.vscode/
+hw3_tests/
+logicsim/logicsim
+logicsim/my_and.png
+logicsim/my_and.uml
+logicsim/my_not.png
+logicsim/my_not.uml
+logicsim/my_or.png
+logicsim/my_or.uml
+logicsim/my_xor.png
+logicsim/my_xor.uml
